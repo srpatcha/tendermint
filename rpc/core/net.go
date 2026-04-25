@@ -13,7 +13,16 @@ import (
 // NetInfo returns network info.
 // More: https://docs.tendermint.com/v0.34/rpc/#/Info/net_info
 func NetInfo(ctx *rpctypes.Context) (*ctypes.ResultNetInfo, error) {
-	peersList := env.P2PPeers.Peers().List()
+	peerSet := env.P2PPeers.Peers()
+	if peerSet == nil {
+		return &ctypes.ResultNetInfo{
+			Listening: env.P2PTransport.IsListening(),
+			Listeners: env.P2PTransport.Listeners(),
+			NPeers:    0,
+			Peers:     []ctypes.Peer{},
+		}, nil
+	}
+	peersList := peerSet.List()
 	peers := make([]ctypes.Peer, 0, len(peersList))
 	for _, peer := range peersList {
 		nodeInfo, ok := peer.NodeInfo().(p2p.DefaultNodeInfo)

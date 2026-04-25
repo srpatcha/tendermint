@@ -243,6 +243,64 @@ type (
 	ResultHealth             struct{}
 )
 
+// ResultHealthDetailed contains detailed node health information.
+type ResultHealthDetailed struct {
+	NodeID        string              `json:"node_id"`
+	IsHealthy     bool                `json:"is_healthy"`
+	IsSyncing     bool                `json:"is_syncing"`
+	NodeInfo      NodeHealthInfo      `json:"node_info"`
+	SyncStatus    SyncHealthStatus    `json:"sync_status"`
+	PeerInfo      PeerHealthInfo      `json:"peer_info"`
+	ConsensusInfo ConsensusHealthInfo `json:"consensus_info"`
+	MemoryInfo    MemoryHealthInfo    `json:"memory_info"`
+	Timestamp     time.Time           `json:"timestamp"`
+}
+
+// NodeHealthInfo contains basic node information.
+type NodeHealthInfo struct {
+	Version    string `json:"version"`
+	Network    string `json:"network"`
+	Moniker    string `json:"moniker"`
+	TxIndexOn  bool   `json:"tx_index_on"`
+	RPCAddress string `json:"rpc_address"`
+}
+
+// SyncHealthStatus contains synchronization status information.
+type SyncHealthStatus struct {
+	LatestBlockHeight   int64     `json:"latest_block_height"`
+	LatestBlockTime     time.Time `json:"latest_block_time"`
+	LatestBlockAge      string    `json:"latest_block_age"`
+	EarliestBlockHeight int64     `json:"earliest_block_height"`
+	CatchingUp          bool      `json:"catching_up"`
+	BlocksPerSecond     float64   `json:"blocks_per_second"`
+}
+
+// PeerHealthInfo contains peer connection information.
+type PeerHealthInfo struct {
+	TotalPeers    int  `json:"total_peers"`
+	InboundPeers  int  `json:"inbound_peers"`
+	OutboundPeers int  `json:"outbound_peers"`
+	IsListening   bool `json:"is_listening"`
+}
+
+// ConsensusHealthInfo contains consensus state information.
+type ConsensusHealthInfo struct {
+	Height         int64  `json:"height"`
+	Round          int32  `json:"round"`
+	Step           string `json:"step"`
+	ValidatorCount int    `json:"validator_count"`
+	VotingPower    int64  `json:"voting_power"`
+}
+
+// MemoryHealthInfo contains memory usage metrics.
+type MemoryHealthInfo struct {
+	AllocMB      float64 `json:"alloc_mb"`
+	TotalAllocMB float64 `json:"total_alloc_mb"`
+	SysMB        float64 `json:"sys_mb"`
+	NumGC        uint32  `json:"num_gc"`
+	GoRoutines   int     `json:"go_routines"`
+}
+
 // Event data from a subscription
 type ResultEvent struct {
 	Query  string              `json:"query"`
