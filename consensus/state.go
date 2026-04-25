@@ -547,7 +547,12 @@ func (cs *State) sendInternalMessage(mi msgInfo) {
 		// TODO: use CList here for strict determinism and
 		// attempt push to internalMsgQueue in receiveRoutine
 		cs.Logger.Debug("internal msg queue is full; using a go-routine")
-		go func() { cs.internalMsgQueue <- mi }()
+		go func() {
+			select {
+			case cs.internalMsgQueue <- mi:
+			case <-cs.Quit():
+			}
+		}()
 	}
 }
 
