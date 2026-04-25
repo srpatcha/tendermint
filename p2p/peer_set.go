@@ -153,5 +153,7 @@ func (ps *PeerSet) Size() int {
 func (ps *PeerSet) List() []Peer {
 	ps.mtx.Lock()
 	defer ps.mtx.Unlock()
-	return ps.list
+	out := make([]Peer, len(ps.list))
+	copy(out, ps.list)
+	return out
 }
